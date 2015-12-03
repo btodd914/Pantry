@@ -15,15 +15,22 @@ import io.orchestrate.client.OrchestrateClient;
  */
 public class ShoppingList {
 
+    private static String apiKey = "c3672b0c-b96c-4145-8b75-bd6895b5458e";
+    private static OrchestrateClient client = new OrchestrateClient(apiKey);
+    private static HashMap<String, Integer> pantry = new HashMap<String, Integer>();
+
+    public static Scanner user_input = new Scanner(System.in);
+
 
     public static void main(String[] args) {
-        String apiKey = "c6dcc957-a634-8570-86b5c5a09e28";
-        OrchestrateClient orchestrateClient = new OrchestrateClient(apiKey);
-        Client client = orchestrateClient;
+
+
+
+
 
 
 //creating my hashmap
-        HashMap<String, Integer> pantry = new HashMap<String, Integer>();
+
 
         pantry.put("apple", 1);
 
@@ -33,7 +40,7 @@ public class ShoppingList {
         System.out.println("Type 'edit' to adjust the items in your pantry");
         System.out.println("Type 'list' to get a list of all items that are currently in your pantry");
 
-        Scanner user_input = new Scanner(System.in);
+
 
         String choice;
         choice = user_input.next();
@@ -42,55 +49,78 @@ public class ShoppingList {
         switch (choice) {
 
             case "add":
-                System.out.println("What item would you like to add to your pantry?");
-                String item = user_input.next();
-                int amount = 0;
-                if (!pantry.containsKey(item)) {
-                    System.out.println("What is the amount that you would like to add?");
-                    amount = user_input.nextInt();
-                } else {
-                    System.out.println("That item is already in your pantry. Please edit this item instead.");
-                }
+                addItem();
 
-
-                pantry.put(item, amount);
-                System.out.println("You have added " + amount +" "+  item + " to your pantry.");
+                break;
 
 
             case "delete":
 
-                System.out.println("What item would you like to delete?");
-                item = user_input.next();
-                if (pantry.containsKey(item)){
-                pantry.remove(item);
-                System.out.println(item + " has been removed from your pantry.");
-                }else{
-                System.out.println("That item does not exist in your pantry.");
-                }
+                deleteItem();
+                break;
 
             case "edit":
-                System.out.println("What item would you like to edit?");
-                item = user_input.next();
-
-                if(!pantry.containsKey(item)){
-                System.out.println("That item does not exist in your pantry.");
-                }else{
-                System.out.println("What is the amount that you would like to change to?");
-                amount = user_input.nextInt();
-                pantry.put(item,amount);
-                    System.out.println("You have changed " + item + " to the amount of " + amount);
-                }
+                editItem();
+                break;
 
             case "list":
-                System.out.println("Here is a list of all of the items in your pantry!");
-                for (String key : pantry.keySet()){
-                    System.out.println(key + ": " + pantry.get(key));
-                }
+                listItem();
+                break;
 
 
 
 
         }
+    }
+    public static void addItem(){
+
+        System.out.println("What item would you like to add to your pantry?");
+        String item = user_input.next();
+        int amount = 0;
+        if (!pantry.containsKey(item)) {
+            System.out.println("What is the amount that you would like to add?");
+            amount = user_input.nextInt();
+        } else {
+            System.out.println("That item is already in your pantry. Please edit this item instead.");
+        }
+
+        final KvMetadata kvMetadata = client.kv("pantry", "item")
+                .put(item, amount)
+                .get();
+        System.out.println("You have added " + amount +" "+  item + " to your pantry.");
+    }
+    public static void deleteItem(){
+
+        System.out.println("What item would you like to delete?");
+        String item = user_input.next();
+        if (pantry.containsKey(item)){
+            pantry.remove(item);
+            System.out.println(item + " has been removed from your pantry.");
+        }else{
+            System.out.println("That item does not exist in your pantry.");
+        }
+    }
+
+    public static void editItem() {
+        System.out.println("What item would you like to edit?");
+        String item = user_input.next();
+
+        if (!pantry.containsKey(item)) {
+            System.out.println("That item does not exist in your pantry.");
+        } else {
+            System.out.println("What is the amount that you would like to change to?");
+            int amount = user_input.nextInt();
+            pantry.put(item, amount);
+            System.out.println("You have changed " + item + " to the amount of " + amount);
+        }
+    }
+
+    public static void listItem(){
+        System.out.println("Here is a list of all of the items in your pantry!");
+        for (String key : pantry.keySet()) {
+            System.out.println(key + ": " + pantry.get(key));
+        }
+
     }
 }
 
