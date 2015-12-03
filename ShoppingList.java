@@ -1,6 +1,8 @@
 import java.util.HashMap;
 import java.util.Scanner;
-
+import io.orchestrate.client.Client;
+import io.orchestrate.client.KvMetadata;
+import io.orchestrate.client.OrchestrateClient;
 /**
  * Created by ryantodd on 12/1/15.
  */
@@ -15,10 +17,15 @@ public class ShoppingList {
 
 
     public static void main(String[] args) {
+        String apiKey = "c6dcc957-a634-8570-86b5c5a09e28";
+        OrchestrateClient orchestrateClient = new OrchestrateClient(apiKey);
+        Client client = orchestrateClient;
 
+
+//creating my hashmap
         HashMap<String, Integer> pantry = new HashMap<String, Integer>();
-        pantry.put("apple", 1);
 
+        pantry.put("apple", 1);
 
         System.out.println("Please choose what option you would like to do.");
         System.out.println("Type 'add' to add something to your pantry");
@@ -31,6 +38,7 @@ public class ShoppingList {
         String choice;
         choice = user_input.next();
 
+//using a switch statement to determine next steps depending on user input
         switch (choice) {
 
             case "add":
@@ -49,21 +57,39 @@ public class ShoppingList {
                 System.out.println("You have added " + amount +" "+  item + " to your pantry.");
 
 
-            /*case "delete":
+            case "delete":
 
                 System.out.println("What item would you like to delete?");
                 item = user_input.next();
+                if (pantry.containsKey(item)){
+                pantry.remove(item);
+                System.out.println(item + " has been removed from your pantry.");
+                }else{
+                System.out.println("That item does not exist in your pantry.");
+                }
 
             case "edit":
                 System.out.println("What item would you like to edit?");
                 item = user_input.next();
 
+                if(!pantry.containsKey(item)){
+                System.out.println("That item does not exist in your pantry.");
+                }else{
+                System.out.println("What is the amount that you would like to change to?");
+                amount = user_input.nextInt();
+                pantry.put(item,amount);
+                    System.out.println("You have changed " + item + " to the amount of " + amount);
+                }
+
             case "list":
                 System.out.println("Here is a list of all of the items in your pantry!");
-                for (i = 0; i < pantry.size(); i++) {
+                for (String key : pantry.keySet()){
+                    System.out.println(key + ": " + pantry.get(key));
+                }
 
-                    System.out.println(pantry.keySet());
-               */
+
+
+
         }
     }
 }
