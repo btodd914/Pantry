@@ -84,9 +84,19 @@ public class ShoppingList {
             System.out.println("That item is already in your pantry. Please edit this item instead.");
         }
 
-        final KvMetadata kvMetadata = client.kv("pantry", "item")
-                .put(item, amount)
-                .get();
+        {
+
+            PantryItem pantryItem = new PantryItem(item,amount);
+
+            KvMetadata kvMetadata = orchestrateClient.postValue("pantry", pantryItem).get();
+
+            System.out.println(kvMetadata.getKey());
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
         System.out.println("You have added " + amount +" "+  item + " to your pantry.");
     }
     public static void deleteItem(){
