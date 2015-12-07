@@ -1,8 +1,11 @@
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
-import io.orchestrate.client.Client;
+
 import io.orchestrate.client.KvMetadata;
 import io.orchestrate.client.OrchestrateClient;
+
+import javax.xml.crypto.KeySelectorException;
 /**
  * Created by ryantodd on 12/1/15.
  */
@@ -50,12 +53,9 @@ public class ShoppingList {
 
             case "add":
                 addItem();
-
                 break;
 
-
             case "delete":
-
                 deleteItem();
                 break;
 
@@ -66,8 +66,6 @@ public class ShoppingList {
             case "list":
                 listItem();
                 break;
-
-
 
 
         }
@@ -85,10 +83,11 @@ public class ShoppingList {
         }
 
         {
+        try {
 
             PantryItem pantryItem = new PantryItem(item,amount);
 
-            KvMetadata kvMetadata = orchestrateClient.postValue("pantry", pantryItem).get();
+            KvMetadata kvMetadata = client.postValue("pantry", pantryItem).get();
 
             System.out.println(kvMetadata.getKey());
 
@@ -99,6 +98,8 @@ public class ShoppingList {
         }
         System.out.println("You have added " + amount +" "+  item + " to your pantry.");
     }
+    }
+
     public static void deleteItem(){
 
         System.out.println("What item would you like to delete?");
